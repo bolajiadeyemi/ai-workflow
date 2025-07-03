@@ -3,13 +3,29 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from openai import OpenAI
-
+import json 
 client = OpenAI()
 
 def generate_x_post(topic: str) -> str:
     # call AI / LLM
     # pass
 
+    with open("post-examples.json", "r") as f:
+        examples = json.load(f)
+
+    examples_str = ""
+
+    for i, example in enumerate(examples, 1):
+        examples_str += f"""
+          <example-{i}>
+          <topic>
+           {example['topic']}
+          </topic>
+          <generated-post>
+            {example['post']}
+          </generated-post>
+          <example-{i}>
+        """
     prompt = f"""
         You are an expert social media manager, and you excel at crafting viral and highly engaging posts for X (formerly Twitter).
 
@@ -27,32 +43,7 @@ def generate_x_post(topic: str) -> str:
         Here are some examples of topics and generated posts:
 
     <examples>
-        <example-1>
-         <topic>
-         Open LLMs are great because they are more than enough for many workflows and offer free use & 100% privacy!
-         </topic>
-         <generated_post>
-         Yes, Gemini 2.5 Pro is amazing. But for many tasks, it's too expensive & simply overkill.
-
-         Don't sleep on open LLMs which you can run locally on your MacBook!
-
-         Open LLMs like Gemma 3 can be run locally via Ollama or LM Studio, offer 100% privacy and 
-         are more than capable enough for most use-cases and workflows.
-         <generated_post>
-        </example-1>
-
-        <example-2>
-         <topic>
-         Despite LLMs: Learn to code! Because AI-assisted coding > Vibe coding.
-         </topic>
-        <generated_post>
-        There's never been a better time to learn coding! Seriously!
-        Yes, you can vibe code sloppy apps all day.
-
-        if you want to build something that actually works, you need to learn to code though.
-        Combine that AI assistants like copilot and nothing's going to stop you!
-        </generated_post>
-        </example-2>
+      {examples_str}
     </examples>
 
 Please use the tone, language, structure, and style of the examples provided above to generate a post that is engaging and relevant to the topic provided by the user.
